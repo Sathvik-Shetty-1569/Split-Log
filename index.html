@@ -1,16 +1,6 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<style>
-:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
-body { margin: 0; font: 14px system-ui, sans-serif; }
-img { max-width: 100%; }
-[hidden] { display: none !important; }
-</style>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Split Log</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -163,9 +153,6 @@ button { cursor: pointer; }
   .btn { padding: 0 16px; }
 }
 </style>
-</head>
-<body>
-
 
 <div class="app">
   <header class="top">
@@ -218,6 +205,12 @@ button { cursor: pointer; }
       { id: "hamcurl", name: "Hamstring curl", sets: 3, lo: 10, hi: 12 },
       { id: "calf", name: "Calf raise (leg press or Smith)", sets: 4, lo: 10, hi: 15, cue: "Pause 1 second at the bottom." }
     ] },
+    calves: { label: "Walk + Calves", sub: "60 min brisk walk, then calf work",
+      note: "Do your 60 minute brisk walk first, then these calf sets. Pause 1 second at the bottom of every rep and take 3 seconds going down.",
+      ex: [
+      { id: "calfstep", name: "Single-leg calf raise on a step, holding a dumbbell", sets: 2, lo: 12, hi: 15, perLeg: true, cue: "Straight knee. Right leg first. Use your 7 kg dumbbell, or bodyweight at first." },
+      { id: "calfbent", name: "Bent-knee calf raise (seated, dumbbell or Smith bar on thighs)", sets: 2, lo: 15, hi: 20, cue: "Knees bent about 90 degrees. This trains the deeper calf muscle (soleus)." }
+    ] },
     upperB: { label: "Upper B", sub: "Shoulders, arms, extra chest", ex: [
       { id: "shpress", name: "Shoulder press", sets: 3, lo: 8, hi: 10 },
       { id: "crossover", name: "Cable crossover, low to high", sets: 3, lo: 12, hi: 15 },
@@ -239,7 +232,7 @@ button { cursor: pointer; }
   var WEEK = [
     { dow: 1, id: "upperA", short: "Up A" },
     { dow: 2, id: "lowerA", short: "Low A" },
-    { dow: 3, kind: "walk", short: "Walk" },
+    { dow: 3, id: "calves", short: "Calves" },
     { dow: 4, id: "upperB", short: "Up B" },
     { dow: 5, id: "lowerB", short: "Low B" },
     { dow: 6, kind: "walk", short: "Walk" },
@@ -247,8 +240,8 @@ button { cursor: pointer; }
   ];
   var DOW_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var RESTINFO = {
-    walk: { title: "Brisk walk", text: "60 minutes, no lifting. It keeps your legs fresh for the next lifting day." },
-    run: { title: "Group run", text: "One run a week. No lifting today." }
+    walk: { title: "Easy walk (optional)", text: "45-60 minutes at an easy pace, no lifting. Skip it if you feel tired. This is your lightest day before the Sunday run." },
+    run: { title: "Easy run", text: "30-40 minutes at a pace where you can still talk, no lifting. Rate your knee the next morning. If it is above 3 out of 10, skip the next run." }
   };
 
   /* ---------- helpers ---------- */
@@ -483,6 +476,8 @@ button { cursor: pointer; }
         h("strong", { text: "Warm-up. " }),
         "5 minutes of walking or a bike, then banded lateral walks, 2-3 sets of 15 steps per side. Keep knee pain at 3 out of 10 or lower."
       ));
+    } else if (day.note) {
+      body.append(h("div", { "class": "note" }, h("strong", { text: "Today. " }), day.note));
     }
     var list = h("div", { "class": "stack" });
     day.ex.forEach(function (ex) { list.append(exCard(w.id, ex)); });
@@ -714,5 +709,4 @@ button { cursor: pointer; }
 })();
 </script>
 
-</body>
-</html>
+</body></html>
