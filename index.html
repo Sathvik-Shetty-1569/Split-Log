@@ -1,6 +1,16 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font: 14px system-ui, sans-serif; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
 <title>Split Log</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -153,6 +163,9 @@ button { cursor: pointer; }
   .btn { padding: 0 16px; }
 }
 </style>
+</head>
+<body>
+
 
 <div class="app">
   <header class="top">
@@ -195,6 +208,7 @@ button { cursor: pointer; }
       { id: "incline", name: "Incline convergent press", sets: 3, lo: 8, hi: 12 },
       { id: "pulldown", name: "Lat pulldown", sets: 3, lo: 8, hi: 12 },
       { id: "row", name: "Seated row", sets: 3, lo: 8, hi: 12 },
+      { id: "lateral", name: "Standing lateral raise", sets: 3, lo: 12, hi: 15, cue: "Raise to shoulder height, 2-3 seconds down." },
       { id: "preacher", name: "Preacher curl", sets: 3, lo: 10, hi: 12, cue: "Take 3 seconds going down." },
       { id: "ohtri", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12 }
     ] },
@@ -205,26 +219,32 @@ button { cursor: pointer; }
       { id: "hamcurl", name: "Hamstring curl", sets: 3, lo: 10, hi: 12 },
       { id: "calf", name: "Calf raise (leg press or Smith)", sets: 4, lo: 10, hi: 15, cue: "Pause 1 second at the bottom." }
     ] },
-    calves: { label: "Walk + Calves", sub: "60 min brisk walk, then calf work",
-      note: "Do your 60 minute brisk walk first, then these calf sets. Pause 1 second at the bottom of every rep and take 3 seconds going down.",
+    calves: { label: "Run + Mini Session", sub: "Easy run, then rear shoulders and forearms",
+      note: "Easy run first, 25-35 minutes at a pace where you can still talk. Skip the run if your knee is above 3 out of 10 today. Then do these light sets, resting only 60 seconds between them.",
       ex: [
-      { id: "calfstep", name: "Single-leg calf raise on a step, holding a dumbbell", sets: 2, lo: 12, hi: 15, perLeg: true, cue: "Straight knee. Right leg first. Use your 7 kg dumbbell, or bodyweight at first." },
-      { id: "calfbent", name: "Bent-knee calf raise (seated, dumbbell or Smith bar on thighs)", sets: 2, lo: 15, hi: 20, cue: "Knees bent about 90 degrees. This trains the deeper calf muscle (soleus)." }
+      { id: "reardelt", name: "Reverse pec deck fly (rear shoulders)", sets: 3, lo: 12, hi: 15, cue: "Face the pad, arms level with shoulders, squeeze your shoulder blades." },
+      { id: "forearm", name: "Forearm curl", sets: 3, lo: 12, hi: 15, cue: "Slow on the way down." }
+    ] },
+    satmini: { label: "Run + Mini Session", sub: "Easy run, then rear shoulders and forearms",
+      note: "Easy run first, 25-35 minutes at a pace where you can still talk. Skip the run if your knee is above 3 out of 10 today. Then do these light sets. Sunday is your full rest day.",
+      ex: [
+      { id: "reardelt", name: "Reverse pec deck fly (rear shoulders)", sets: 3, lo: 12, hi: 15, cue: "Face the pad, arms level with shoulders, squeeze your shoulder blades." },
+      { id: "forearm", name: "Forearm curl", sets: 3, lo: 12, hi: 15, cue: "Slow on the way down." }
     ] },
     upperB: { label: "Upper B", sub: "Shoulders, arms, extra chest", ex: [
       { id: "shpress", name: "Shoulder press", sets: 3, lo: 8, hi: 10 },
-      { id: "crossover", name: "Cable crossover, low to high", sets: 3, lo: 12, hi: 15 },
+      { id: "pecdeck", name: "Pec deck fly", sets: 3, lo: 12, hi: 15, cue: "Squeeze for 1 second in the middle, 3 seconds back out. If it is taken, use an incline dumbbell fly." },
       { id: "assist", name: "Assisted pull-up", sets: 3, lo: 6, hi: 10, cue: "Weight is the assistance. Lower it over time." },
       { id: "lateral", name: "Standing lateral raise", sets: 3, lo: 12, hi: 15 },
-      { id: "forearm", name: "Forearm curl", sets: 3, lo: 12, hi: 15 },
-      { id: "cablecurl", name: "Cable curl", sets: 2, lo: 12, hi: 15 },
-      { id: "dips", name: "Dips", sets: 2, lo: 8, hi: 12, cue: "Weight 0 means bodyweight." }
+      { id: "cablecurl", name: "Cable curl", sets: 3, lo: 12, hi: 15 },
+      { id: "dips", name: "Dips", sets: 2, lo: 8, hi: 12, cue: "Lean forward, elbows slightly out, to work the chest. Lower until upper arms are level with the floor. Weight 0 means bodyweight." },
+      { id: "ohtriB", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12, cue: "Take 3 seconds going down. If the cable is taken, use a dumbbell overhead extension with both hands." }
     ] },
     lowerB: { label: "Lower B", sub: "Quads, back, hamstrings, calves, core", lower: true, ex: [
       { id: "legpress", name: "Leg press", sets: 3, lo: 8, hi: 12, knee: true, cue: "Pain-free depth." },
       { id: "split", name: "Smith split squat", sets: 3, lo: 8, hi: 10, perLeg: true, knee: true, cue: "Right leg first. Match the left leg to the right leg's reps." },
       { id: "backext", name: "Back extension", sets: 3, lo: 10, hi: 12 },
-      { id: "hamcurl", name: "Hamstring curl", sets: 2, lo: 12, hi: 15 },
+      { id: "hamcurl", name: "Hamstring curl", sets: 3, lo: 12, hi: 15 },
       { id: "calf", name: "Calf raise (leg press or Smith)", sets: 4, lo: 10, hi: 15, cue: "Pause 1 second at the bottom." },
       { id: "core", name: "Core machine or vertical leg raise", sets: 3, lo: 10, hi: 15 }
     ] }
@@ -232,14 +252,15 @@ button { cursor: pointer; }
   var WEEK = [
     { dow: 1, id: "upperA", short: "Up A" },
     { dow: 2, id: "lowerA", short: "Low A" },
-    { dow: 3, id: "calves", short: "Calves" },
+    { dow: 3, id: "calves", short: "Run" },
     { dow: 4, id: "upperB", short: "Up B" },
     { dow: 5, id: "lowerB", short: "Low B" },
-    { dow: 6, kind: "walk", short: "Walk" },
-    { dow: 0, kind: "run", short: "Run" }
+    { dow: 6, id: "satmini", short: "Run" },
+    { dow: 0, kind: "rest", short: "Rest" }
   ];
   var DOW_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var RESTINFO = {
+    rest: { title: "Rest day", text: "Full rest. No lifting and no running. Eat well and sleep 7-9 hours." },
     walk: { title: "Easy walk (optional)", text: "45-60 minutes at an easy pace, no lifting. Skip it if you feel tired. This is your lightest day before the Sunday run." },
     run: { title: "Easy run", text: "30-40 minutes at a pace where you can still talk, no lifting. Rate your knee the next morning. If it is above 3 out of 10, skip the next run." }
   };
@@ -709,4 +730,5 @@ button { cursor: pointer; }
 })();
 </script>
 
-</body></html>
+</body>
+</html>
