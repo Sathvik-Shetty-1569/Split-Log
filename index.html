@@ -120,6 +120,12 @@ button { cursor: pointer; }
 .inp::placeholder { color: var(--muted); opacity: .55; font-weight: 400; }
 .addset { align-self: flex-start; background: none; border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; font-size: 13px; color: var(--muted); }
 .addset:hover { color: var(--fg); border-color: var(--muted); }
+.plan { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 3px 12px; margin: 0; font-size: 13px; }
+.plan dt { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding-top: 2px; }
+.plan dd { margin: 0; overflow-wrap: anywhere; }
+.inp.warm { background: transparent; border-style: dashed; }
+.setn.w { color: var(--accent); font-weight: 600; }
+.note + .note { margin-top: -6px; }
 
 .knee { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
 .knee h3 { margin: 0; font-size: 16px; font-weight: 600; }
@@ -202,51 +208,58 @@ button { cursor: pointer; }
   "use strict";
 
   /* ---------- plan ---------- */
+  /* up = what to add when every set hits the top of the range. warm = warm-up set as a share of the working weight. */
+  var RUN_EX = [
+    { id: "wallsit", name: "Wall sit", sets: 4, lo: 30, hi: 45, timed: true, up: "a light plate on your lap",
+      cue: "Knees at about 90 degrees. Enter seconds. Stop if you feel sharp knee pain." },
+    { id: "reardelt", name: "Reverse pec deck fly (rear shoulders)", sets: 3, lo: 12, hi: 15, up: "2.5 kg", cue: "Face the pad, arms level with shoulders, squeeze your shoulder blades." },
+    { id: "forearm", name: "Forearm curl", sets: 3, lo: 12, hi: 15, up: "2.5 kg", cue: "Slow on the way down." },
+    { id: "deadhang", name: "Dead hang", sets: 3, lo: 20, hi: 40, timed: true, up: "5 s per hold",
+      cue: "Enter seconds. End the hold when your grip or form goes." }
+  ];
   var PLAN = {
     upperA: { label: "Upper A", sub: "Chest, back, arms", ex: [
-      { id: "bench", name: "Smith or flat bench press", sets: 3, lo: 6, hi: 10 },
-      { id: "incline", name: "Incline convergent press", sets: 3, lo: 8, hi: 12 },
-      { id: "pulldown", name: "Lat pulldown", sets: 3, lo: 8, hi: 12 },
-      { id: "row", name: "Seated row", sets: 3, lo: 8, hi: 12 },
-      { id: "lateral", name: "Standing lateral raise", sets: 3, lo: 12, hi: 15, cue: "Raise to shoulder height, 2-3 seconds down." },
-      { id: "preacher", name: "Preacher curl", sets: 3, lo: 10, hi: 12, cue: "Take 3 seconds going down." },
-      { id: "ohtri", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12 }
+      { id: "bench", name: "Smith or flat bench press", sets: 3, lo: 6, hi: 10, up: "2.5 kg" },
+      { id: "incline", name: "Incline convergent press", sets: 3, lo: 8, hi: 12, up: "2.5 kg" },
+      { id: "pulldown", name: "Lat pulldown", sets: 3, lo: 8, hi: 12, up: "2.5 kg" },
+      { id: "row", name: "Seated row", sets: 3, lo: 8, hi: 12, up: "2.5 kg" },
+      { id: "lateral", name: "Standing lateral raise", sets: 3, lo: 12, hi: 15, up: "1 to 2.5 kg", cue: "Raise to shoulder height, 2-3 seconds down." },
+      { id: "preacher", name: "Preacher curl", sets: 3, lo: 10, hi: 12, up: "2.5 kg", cue: "Take 3 seconds going down." },
+      { id: "ohtri", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12, up: "2.5 kg" }
     ] },
     lowerA: { label: "Lower A", sub: "Quads, hamstrings, calves", lower: true, ex: [
-      { id: "split", name: "Smith split squat", sets: 3, lo: 8, hi: 10, perLeg: true, knee: true, cue: "Right leg first. Match the left leg to the right leg's reps." },
-      { id: "hack", name: "Hack squat", sets: 3, lo: 6, hi: 10, knee: true, cue: "Feet slightly high, 3 seconds down, depth that stays pain-free." },
-      { id: "legext", name: "Leg extension", sets: 3, lo: 10, hi: 15, knee: true, cue: "Take 3 seconds going down." },
-      { id: "hamcurl", name: "Hamstring curl", sets: 3, lo: 10, hi: 12 },
-      { id: "calf", name: "Calf raise (leg press or Smith)", sets: 4, lo: 10, hi: 15, cue: "Pause 1 second at the bottom." }
+      { id: "hack", name: "Hack squat", sets: 3, lo: 8, hi: 12, knee: true, up: "1.25 kg per side", warm: { pct: 50, r: "8" },
+        cue: "Log the weight on each side. 3 seconds down, 3 seconds up, pain-free depth." },
+      { id: "split", name: "Split squat", sets: 3, lo: 8, hi: 12, perLeg: true, knee: true, unit: "lb", shared: true, up: "2.5 lb each", warm: { bw: true, r: "6" },
+        cue: "Right leg first, match the left to the right. 3 seconds down, 3 seconds up." },
+      { id: "legext", name: "Leg extension", sets: 3, lo: 10, hi: 15, knee: true, up: "2.5 kg", cue: "Take 3 seconds going down." },
+      { id: "hamcurl", name: "Hamstring curl", sets: 3, lo: 10, hi: 12, up: "2.5 kg" },
+      { id: "calf", name: "Calf raise (leg press or Smith)", sets: 4, lo: 10, hi: 15, up: "5 kg", cue: "Pause 1 second at the bottom." }
     ] },
-    calves: { label: "Run + Mini Session", sub: "Easy run, then rear shoulders and forearms",
-      note: "Easy run first, 25-35 minutes at a pace where you can still talk. Skip the run if your knee is above 3 out of 10 today. Then do these light sets, resting only 60 seconds between them.",
-      ex: [
-      { id: "reardelt", name: "Reverse pec deck fly (rear shoulders)", sets: 3, lo: 12, hi: 15, cue: "Face the pad, arms level with shoulders, squeeze your shoulder blades." },
-      { id: "forearm", name: "Forearm curl", sets: 3, lo: 12, hi: 15, cue: "Slow on the way down." }
-    ] },
-    satmini: { label: "Run + Mini Session", sub: "Easy run, then rear shoulders and forearms",
-      note: "Easy run first, 25-35 minutes at a pace where you can still talk. Skip the run if your knee is above 3 out of 10 today. Then do these light sets. Sunday is your full rest day.",
-      ex: [
-      { id: "reardelt", name: "Reverse pec deck fly (rear shoulders)", sets: 3, lo: 12, hi: 15, cue: "Face the pad, arms level with shoulders, squeeze your shoulder blades." },
-      { id: "forearm", name: "Forearm curl", sets: 3, lo: 12, hi: 15, cue: "Slow on the way down." }
-    ] },
+    calves: { label: "Run + Mini Session", sub: "Easy run, wall sit, rear shoulders, forearms, dead hang",
+      note: "Easy run first, 25-35 minutes at a talking pace. Skip the run if your knee is above 3 out of 10. Then the wall sit, then the light sets.",
+      ex: RUN_EX },
+    satmini: { label: "Run + Mini Session", sub: "Easy run, wall sit, rear shoulders, forearms, dead hang",
+      note: "Easy run first, 25-35 minutes at a talking pace. Skip the run if your knee is above 3 out of 10. Then the wall sit, then the light sets. Sunday is your full rest day.",
+      ex: RUN_EX },
     upperB: { label: "Upper B", sub: "Shoulders, arms, extra chest", ex: [
-      { id: "shpress", name: "Shoulder press", sets: 3, lo: 8, hi: 10 },
-      { id: "pecdeck", name: "Pec deck fly", sets: 3, lo: 12, hi: 15, cue: "Squeeze for 1 second in the middle, 3 seconds back out. If it is taken, use an incline dumbbell fly." },
-      { id: "assist", name: "Assisted pull-up", sets: 3, lo: 6, hi: 10, cue: "Weight is the assistance. Lower it over time." },
-      { id: "lateral", name: "Standing lateral raise", sets: 3, lo: 12, hi: 15 },
-      { id: "cablecurl", name: "Cable curl", sets: 3, lo: 12, hi: 15 },
-      { id: "dips", name: "Dips", sets: 2, lo: 8, hi: 12, cue: "Lean forward, elbows slightly out, to work the chest. Lower until upper arms are level with the floor. Weight 0 means bodyweight." },
-      { id: "ohtriB", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12, cue: "Take 3 seconds going down. If the cable is taken, use a dumbbell overhead extension with both hands." }
+      { id: "shpress", name: "Shoulder press", sets: 3, lo: 8, hi: 10, up: "2.5 kg" },
+      { id: "pecdeck", name: "Pec deck fly", sets: 3, lo: 12, hi: 15, up: "2.5 kg", cue: "Squeeze for 1 second in the middle, 3 seconds back out. If it is taken, use an incline dumbbell fly." },
+      { id: "assist", name: "Assisted pull-up", sets: 3, lo: 6, hi: 10, up: "-2.5 kg of assistance", cue: "Weight is the assistance. Lower it over time." },
+      { id: "lateral", name: "Standing lateral raise", sets: 3, lo: 12, hi: 15, up: "1 to 2.5 kg" },
+      { id: "cablecurl", name: "Cable curl", sets: 3, lo: 12, hi: 15, up: "2.5 kg" },
+      { id: "dips", name: "Dips", sets: 2, lo: 8, hi: 12, up: "2.5 kg", cue: "Lean forward, elbows slightly out, to work the chest. Lower until upper arms are level with the floor. Weight 0 means bodyweight." },
+      { id: "ohtriB", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12, up: "2.5 kg", cue: "Take 3 seconds going down. If the cable is taken, use a dumbbell overhead extension with both hands." }
     ] },
     lowerB: { label: "Lower B", sub: "Quads, back, hamstrings, calves, core", lower: true, ex: [
-      { id: "legpress", name: "Leg press", sets: 3, lo: 8, hi: 12, knee: true, cue: "Pain-free depth." },
-      { id: "split", name: "Smith split squat", sets: 3, lo: 8, hi: 10, perLeg: true, knee: true, cue: "Right leg first. Match the left leg to the right leg's reps." },
-      { id: "backext", name: "Back extension", sets: 3, lo: 10, hi: 12 },
-      { id: "hamcurl", name: "Hamstring curl", sets: 3, lo: 12, hi: 15 },
-      { id: "calf", name: "Calf raise (leg press or Smith)", sets: 4, lo: 10, hi: 15, cue: "Pause 1 second at the bottom." },
-      { id: "core", name: "Core machine or vertical leg raise", sets: 3, lo: 10, hi: 15 }
+      { id: "legpress", name: "Leg press", sets: 3, lo: 8, hi: 12, knee: true, unit: "lb", up: "5 lb per side", warm: { pct: 50, r: "8" },
+        cue: "Log the weight on each side. 3 seconds down, 3 seconds up, pain-free depth." },
+      { id: "split", name: "Split squat", sets: 3, lo: 8, hi: 12, perLeg: true, knee: true, unit: "lb", shared: true, up: "2.5 lb each", warm: { bw: true, r: "6" },
+        cue: "Right leg first, match the left to the right. 3 seconds down, 3 seconds up." },
+      { id: "backext", name: "Back extension", sets: 3, lo: 10, hi: 12, up: "2.5 kg" },
+      { id: "hamcurl", name: "Hamstring curl", sets: 3, lo: 12, hi: 15, up: "2.5 kg" },
+      { id: "calf", name: "Calf raise (leg press or Smith)", sets: 4, lo: 10, hi: 15, up: "5 kg", cue: "Pause 1 second at the bottom." },
+      { id: "core", name: "Core machine or vertical leg raise", sets: 3, lo: 10, hi: 15, up: "2.5 kg" }
     ] }
   };
   var WEEK = [
@@ -330,12 +343,14 @@ button { cursor: pointer; }
     for (var i = 0; i < ex.sets; i++) a.push({ w: "", r: "", l: "" });
     return a;
   }
+  function newDraft() { return { sets: {}, warm: {}, knee: "" }; }
   function loadDraft() {
     var id = curId();
-    draft = { sets: {}, knee: "" };
+    draft = newDraft();
     if (!id) return;
     var raw = lsGet("splitlog.draft." + id);
     if (raw) { try { var p = JSON.parse(raw); if (p && p.sets) draft = p; } catch (e) {} }
+    if (!draft.warm) draft.warm = {};
     PLAN[id].ex.forEach(function (ex) {
       if (!draft.sets[ex.id] || !draft.sets[ex.id].length) draft.sets[ex.id] = blankSets(ex);
     });
@@ -350,40 +365,59 @@ button { cursor: pointer; }
   }
 
   /* ---------- derived ---------- */
-  function lastFor(dayId, exId) {
+  var LB = 0.4536;
+  function lastFor(dayId, ex) {
     for (var i = 0; i < sessions.length; i++) {
       var s = sessions[i];
-      if (s.dayId === dayId && s.sets && s.sets[exId] && s.sets[exId].length) return s;
+      if ((s.dayId === dayId || ex.shared) && s.sets && s.sets[ex.id] && s.sets[ex.id].length) return s;
     }
     return null;
   }
+  function warmPh(dayId, ex) {
+    if (ex.warm.bw) return "BW";
+    var s = lastFor(dayId, ex), mx = 0;
+    if (s) s.sets[ex.id].forEach(function (x) { if (x.w > mx) mx = x.w; });
+    return mx ? String(Math.round(mx * ex.warm.pct / 10) / 10) : (ex.unit || "kg");
+  }
+  function wtxt(s) { return s.w ? s.w + (s.u || "kg") : "BW"; }
   function setsText(ex, arr) {
     return arr.map(function (s) {
-      return ex.perLeg ? wl(s.w) + "kg R" + s.r + "/L" + s.l : wl(s.w) + "×" + s.r;
+      if (ex.perLeg) return wtxt(s) + " R" + s.r + "/L" + s.l;
+      return wtxt(s) + "×" + s.r + (ex.timed ? "s" : "");
     }).join("   ");
   }
   function hintFor(dayId, ex) {
-    var s = lastFor(dayId, ex.id);
-    if (!s) return { text: "No earlier record yet.", go: false };
+    var s = lastFor(dayId, ex);
+    if (!s) return { text: ex.warm ? "First session: use about 70% of your old weight." : "No earlier record yet.", go: false };
     var arr = s.sets[ex.id];
     var text = "Last (" + new Date(s.ts).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + "): " + setsText(ex, arr);
     var full = arr.length >= ex.sets && arr.every(function (x) {
       return x.r >= ex.hi && (!ex.perLeg || x.l >= ex.hi);
     });
+    var go = false;
     if (full) {
-      text += ex.knee
-        ? "  Top of range hit. Add weight only if your knee stayed at 1/10 or less."
-        : "  Top of range hit. Add a little weight.";
+      var add = "Add " + ex.up + ".";
+      if (ex.knee && s.knee != null && s.knee > 3) {
+        text += "  Top of range hit, but your knee reached " + s.knee + "/10. Hold this weight.";
+      } else if (ex.knee && s.kneeNext != null && s.kneeNext > 0) {
+        text += "  Top of range hit, but your knee was " + s.kneeNext + "/10 the next morning. Hold this weight.";
+      } else if (ex.knee && s.kneeNext == null) {
+        text += "  Top of range hit. " + add + " Only if your knee stayed at 3/10 or less and was pain-free next morning.";
+      } else {
+        go = true;
+        text += "  Top of range hit. " + add;
+      }
     }
-    return { text: text, go: full };
+    return { text: text, go: go };
   }
   function volume(setsObj, dayId) {
     var total = 0;
     var day = PLAN[dayId];
     Object.keys(setsObj || {}).forEach(function (exId) {
       var ex = day && day.ex.filter(function (e) { return e.id === exId; })[0];
+      if (ex && ex.timed) return;
       setsObj[exId].forEach(function (s) {
-        total += (s.w || 0) * ((s.r || 0) + (ex && ex.perLeg ? (s.l || 0) : 0));
+        total += (s.w || 0) * (s.u === "lb" ? LB : 1) * ((s.r || 0) + (ex && ex.perLeg ? (s.l || 0) : 0));
       });
     });
     return total;
@@ -394,7 +428,7 @@ button { cursor: pointer; }
     PLAN[id].ex.forEach(function (ex) {
       (draft.sets[ex.id] || []).forEach(function (s) {
         var r = int(s.r), l = ex.perLeg ? int(s.l) : 0;
-        if (r > 0 || l > 0) { n++; vol += num(s.w) * (r + l); }
+        if (r > 0 || l > 0) { n++; if (!ex.timed) vol += num(s.w) * (ex.unit === "lb" ? LB : 1) * (r + l); }
       });
     });
     return { n: n, vol: vol };
@@ -431,42 +465,64 @@ button { cursor: pointer; }
   function exCard(dayId, ex) {
     var cols = ex.perLeg ? 3 : 2;
     var sets = draft.sets[ex.id];
+    var unit = ex.unit || "kg";
+    var repWord = ex.timed ? "sec" : "reps";
+    var wu = null;
+    if (ex.warm) { if (!draft.warm[ex.id]) draft.warm[ex.id] = { w: "", r: "", l: "" }; wu = draft.warm[ex.id]; }
     var hint = hintFor(dayId, ex);
     var grid = h("div", { "class": "grid", style: "--cols:" + cols });
 
+    function field(obj, key, ph, mode, id, label, cls) {
+      return h("input", {
+        "class": "inp" + (cls ? " " + cls : ""), id: id, type: "text", inputmode: mode, autocomplete: "off",
+        placeholder: ph, value: obj[key], "aria-label": label,
+        oninput: function (e) { obj[key] = e.target.value; persistDraft(); renderTally(); }
+      });
+    }
     function build() {
       grid.replaceChildren();
-      var head = [h("span"), h("span", { "class": "colhead", text: "kg" }),
-        h("span", { "class": "colhead", text: ex.perLeg ? "reps R" : "reps" })];
-      if (ex.perLeg) head.push(h("span", { "class": "colhead", text: "reps L" }));
+      var head = [h("span"), h("span", { "class": "colhead", text: unit }),
+        h("span", { "class": "colhead", text: ex.perLeg ? repWord + " R" : repWord })];
+      if (ex.perLeg) head.push(h("span", { "class": "colhead", text: repWord + " L" }));
       head.forEach(function (c) { grid.append(c); });
+      if (wu) {
+        var wb = "in-" + dayId + "-" + ex.id + "-warm";
+        var wField = field(wu, "w", warmPh(dayId, ex), "decimal", wb + "-w", ex.name + ", warm-up, " + unit, "warm");
+        wField.setAttribute("data-wex", ex.id);
+        var wrow = [
+          h("span", { "class": "setn w", title: "Warm-up set", text: "W" }),
+          wField,
+          field(wu, "r", ex.warm.r, "numeric", wb + "-r", ex.name + ", warm-up, " + repWord, "warm")
+        ];
+        if (ex.perLeg) wrow.push(field(wu, "l", ex.warm.r, "numeric", wb + "-l", ex.name + ", warm-up, " + repWord + " left", "warm"));
+        wrow.forEach(function (c) { grid.append(c); });
+      }
       sets.forEach(function (s, i) {
         var base = "in-" + dayId + "-" + ex.id + "-" + i;
-        function field(key, ph, mode, sfx) {
-          return h("input", {
-            "class": "inp", id: base + "-" + sfx, type: "text", inputmode: mode, autocomplete: "off",
-            placeholder: ph, value: s[key], "aria-label": ex.name + ", set " + (i + 1) + ", " + sfx,
-            oninput: function (e) { s[key] = e.target.value; persistDraft(); renderTally(); }
-          });
-        }
         var repPh = ex.lo + "-" + ex.hi;
+        var nm = ex.name + ", set " + (i + 1) + ", ";
         var row = [
           h("span", { "class": "setn", text: String(i + 1) }),
-          field("w", "kg", "decimal", "kg"),
-          field("r", repPh, "numeric", "reps")
+          field(s, "w", unit, "decimal", base + "-kg", nm + unit),
+          field(s, "r", repPh, "numeric", base + "-reps", nm + repWord)
         ];
-        if (ex.perLeg) row.push(field("l", repPh, "numeric", "repsL"));
+        if (ex.perLeg) row.push(field(s, "l", repPh, "numeric", base + "-repsL", nm + repWord + " left"));
         row.forEach(function (c) { grid.append(c); });
       });
     }
     build();
 
+    var planRows = [];
+    if (ex.warm) planRows.push(h("dt", { text: "Warm-up" }), h("dd", { text: (ex.warm.bw ? "Bodyweight" : ex.warm.pct + "% of your working weight") + ", " + ex.warm.r + " reps" + (ex.perLeg ? " per leg" : "") }));
+    planRows.push(h("dt", { text: "Add" }), h("dd", { text: ex.up + " when you hit " + ex.hi + (ex.timed ? " s" : " reps") + " on all " + ex.sets + " sets" }));
+
     return h("article", { "class": "ex" },
       h("div", { "class": "exhead" },
         h("h3", { text: ex.name }),
-        h("span", { "class": "target", text: ex.sets + " × " + ex.lo + "-" + ex.hi + (ex.perLeg ? " /leg" : "") })
+        h("span", { "class": "target", text: ex.sets + " × " + ex.lo + "-" + ex.hi + (ex.timed ? " s" : "") + (ex.perLeg ? " /leg" : "") })
       ),
       ex.cue ? h("p", { "class": "cue", text: ex.cue }) : null,
+      planRows.length ? h("dl", { "class": "plan" }, planRows) : null,
       h("p", { "class": "hint" + (hint.go ? " go" : ""), "data-ex": ex.id, text: hint.text }),
       grid,
       h("button", { "class": "addset", type: "button", onclick: function () {
@@ -496,6 +552,10 @@ button { cursor: pointer; }
       body.append(h("div", { "class": "note" },
         h("strong", { text: "Warm-up. " }),
         "5 minutes of walking or a bike, then banded lateral walks, 2-3 sets of 15 steps per side. Keep knee pain at 3 out of 10 or lower."
+      ));
+      body.append(h("div", { "class": "note" },
+        h("strong", { text: "Knee plan. " }),
+        "Lifts with a W row: 1 warm-up set, then 3 working sets at the same weight. Weeks 1-2: use about 70% of your old weights."
       ));
     } else if (day.note) {
       body.append(h("div", { "class": "note" }, h("strong", { text: "Today. " }), day.note));
@@ -532,6 +592,8 @@ button { cursor: pointer; }
       var el = document.querySelector('.hint[data-ex="' + ex.id + '"]');
       if (!el) return;
       var hint = hintFor(id, ex);
+      var wi = ex.warm ? document.querySelector('.inp.warm[data-wex="' + ex.id + '"]') : null;
+      if (wi) wi.placeholder = warmPh(id, ex);
       el.textContent = hint.text;
       el.className = "hint" + (hint.go ? " go" : "");
     });
@@ -571,7 +633,9 @@ button { cursor: pointer; }
           day.ex.forEach(function (ex) {
             var arr = s.sets && s.sets[ex.id];
             if (!arr || !arr.length) return;
-            bodyEl.append(h("div", { "class": "hx" }, h("span", { "class": "n", text: ex.name }), h("span", { "class": "s", text: setsText(ex, arr) })));
+            var wm = s.warm && s.warm[ex.id];
+            bodyEl.append(h("div", { "class": "hx" }, h("span", { "class": "n", text: ex.name }),
+              h("span", { "class": "s", text: (wm ? "W " + setsText(ex, [wm]) + "   |   " : "") + setsText(ex, arr) })));
           });
         }
         if (day && day.lower) {
@@ -621,18 +685,25 @@ button { cursor: pointer; }
     var id = curId();
     if (!id || saving) return;
     var day = PLAN[id];
-    var out = {}, n = 0;
+    var out = {}, warmOut = {}, n = 0;
     day.ex.forEach(function (ex) {
       var arr = [];
-      (draft.sets[ex.id] || []).forEach(function (s) {
+      function mk(s) {
         var r = int(s.r), l = ex.perLeg ? int(s.l) : 0;
-        if (r > 0 || l > 0) arr.push(ex.perLeg ? { w: num(s.w), r: r, l: l } : { w: num(s.w), r: r });
-      });
+        if (!(r > 0 || l > 0)) return null;
+        var o = { w: num(s.w), r: r };
+        if (ex.perLeg) o.l = l;
+        if (ex.unit === "lb") o.u = "lb";
+        return o;
+      }
+      (draft.sets[ex.id] || []).forEach(function (s) { var o = mk(s); if (o) arr.push(o); });
       if (arr.length) { out[ex.id] = arr; n += arr.length; }
+      var wo = ex.warm && draft.warm && draft.warm[ex.id] ? mk(draft.warm[ex.id]) : null;
+      if (wo) warmOut[ex.id] = wo;
     });
     if (!n) { toast("Log at least one set with reps first.", true); return; }
     var doc = {
-      ts: Date.now(), dayId: id, label: day.label, sets: out,
+      ts: Date.now(), dayId: id, label: day.label, sets: out, warm: warmOut,
       knee: day.lower && draft.knee !== "" ? Number(draft.knee) : null,
       kneeNext: null
     };
@@ -641,7 +712,7 @@ button { cursor: pointer; }
     store.save(doc).then(function () {
       saving = false;
       lsDel("splitlog.draft." + id);
-      draft = { sets: {}, knee: "" };
+      draft = newDraft();
       loadDraft();
       renderDay();
       renderTally();
