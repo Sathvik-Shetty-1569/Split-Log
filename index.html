@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!doctype html>
 <html lang="en">
 <head>
@@ -217,39 +218,51 @@ button { cursor: pointer; }
     { id: "deadhang", name: "Dead hang", sets: 3, lo: 20, hi: 40, timed: true, up: "5 s per hold",
       cue: "Enter seconds. End the hold when your grip or form goes." }
   ];
+  var ABS_EX = [
+    { id: "coremachine", name: "Abs machine (core machine crunch)", sets: 3, lo: 10, hi: 15, up: "2.5 kg",
+      cue: "Curl your ribs toward your pelvis. Slow on the way back." },
+    { id: "kneeraise", name: "Leg raise (vertical leg raise station)", sets: 3, lo: 10, hi: 15, up: "a light ankle weight, or a dumbbell between your feet",
+      cue: "Knees bent. Curl your pelvis up at the top so your abs do the work, not your hip flexors. 2 seconds down." }
+  ];
+  var WED_EX = RUN_EX.concat(ABS_EX);
+  var SAT_EX = RUN_EX.concat(ABS_EX);
   var PLAN = {
     upperA: { label: "Upper A", sub: "Chest, back, arms", ex: [
-      { id: "bench", name: "Smith or flat bench press", sets: 3, lo: 6, hi: 10, up: "2.5 kg" },
+      { id: "bench", name: "Flat chest press (convergent machine)", sets: 3, lo: 8, hi: 12, up: "2.5 kg", warm: { pct: 50, r: "8" } },
       { id: "incline", name: "Incline convergent press", sets: 3, lo: 8, hi: 12, up: "2.5 kg" },
-      { id: "pulldown", name: "Lat pulldown", sets: 3, lo: 8, hi: 12, up: "2.5 kg" },
+      { id: "pulldown", name: "Lat pulldown", sets: 3, lo: 8, hi: 12, up: "2.5 kg", warm: { pct: 50, r: "8" } },
       { id: "row", name: "Seated row", sets: 3, lo: 8, hi: 12, up: "2.5 kg" },
       { id: "lateral", name: "Standing lateral raise", sets: 3, lo: 12, hi: 15, up: "1 to 2.5 kg", cue: "Raise to shoulder height, 2-3 seconds down." },
-      { id: "preacher", name: "Preacher curl", sets: 3, lo: 10, hi: 12, up: "2.5 kg", cue: "Take 3 seconds going down." },
-      { id: "ohtri", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12, up: "2.5 kg" }
+      { id: "preacher", name: "Incline dumbbell curl", sets: 3, lo: 10, hi: 12, up: "1 to 2 kg per dumbbell",
+        cue: "Bench at about 45-60 degrees, arms hanging straight down. Log the weight of one dumbbell. Take 3 seconds going down and get a full stretch at the bottom." },
+      { id: "ohtri", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12, up: "2.5 kg",
+        cue: "Take 3 seconds going down. Get a full stretch at the bottom." }
     ] },
     lowerA: { label: "Lower A", sub: "Quads, hamstrings, calves", lower: true, ex: [
       { id: "hack", name: "Hack squat", sets: 3, lo: 8, hi: 12, knee: true, up: "1.25 kg per side", warm: { pct: 50, r: "8" },
         cue: "Log the weight on each side. 3 seconds down, 3 seconds up, pain-free depth." },
       { id: "split", name: "Split squat", sets: 3, lo: 8, hi: 12, perLeg: true, knee: true, unit: "lb", shared: true, up: "2.5 lb each", warm: { bw: true, r: "6" },
         cue: "Right leg first, match the left to the right. 3 seconds down, 3 seconds up." },
-      { id: "legext", name: "Leg extension", sets: 3, lo: 10, hi: 15, knee: true, up: "2.5 kg", cue: "Take 3 seconds going down." },
+      { id: "legext", name: "Leg extension", sets: 3, lo: 10, hi: 15, knee: true, up: "2.5 kg", partial: true,
+        cue: "Bottom-to-mid reps: start with knees bent about 90 degrees (stretched position), lift only to about halfway, 3 seconds down. Do not lock out. Stop if knee pain goes above 3 out of 10." },
       { id: "hamcurl", name: "Hamstring curl", sets: 3, lo: 10, hi: 12, up: "2.5 kg" },
       { id: "calf", name: "Calf raise (leg press or Smith)", sets: 4, lo: 10, hi: 15, up: "5 kg", cue: "Pause 1 second at the bottom." }
     ] },
-    calves: { label: "Run + Mini Session", sub: "Easy run, wall sit, rear shoulders, forearms, dead hang",
-      note: "Easy run first, 25-35 minutes at a talking pace. Skip the run if your knee is above 3 out of 10. Then the wall sit, then the light sets.",
-      ex: RUN_EX },
-    satmini: { label: "Run + Mini Session", sub: "Easy run, wall sit, rear shoulders, forearms, dead hang",
-      note: "Easy run first, 25-35 minutes at a talking pace. Skip the run if your knee is above 3 out of 10. Then the wall sit, then the light sets. Sunday is your full rest day.",
-      ex: RUN_EX },
+    calves: { label: "Run + Mini Session", sub: "Easy run, wall sit, rear shoulders, forearms, dead hang, abs",
+      note: "Easy run first, 25-35 minutes at a talking pace. Skip the run if your knee is above 3 out of 10. Then the wall sit, then the light sets, then abs last.",
+      ex: WED_EX },
+    satmini: { label: "Run + Mini Session", sub: "Easy run, wall sit, rear shoulders, forearms, dead hang, abs",
+      note: "Easy run first, 25-35 minutes at a talking pace. Skip the run if your knee is above 3 out of 10. Then the wall sit, then the light sets, then abs last. Sunday is your full rest day.",
+      ex: SAT_EX },
     upperB: { label: "Upper B", sub: "Shoulders, arms, extra chest", ex: [
-      { id: "shpress", name: "Shoulder press", sets: 3, lo: 8, hi: 10, up: "2.5 kg" },
+      { id: "shpress", name: "Shoulder press", sets: 3, lo: 8, hi: 10, up: "2.5 kg", warm: { pct: 50, r: "8" } },
       { id: "pecdeck", name: "Pec deck fly", sets: 3, lo: 12, hi: 15, up: "2.5 kg", cue: "Squeeze for 1 second in the middle, 3 seconds back out. If it is taken, use an incline dumbbell fly." },
-      { id: "assist", name: "Assisted pull-up", sets: 3, lo: 6, hi: 10, up: "-2.5 kg of assistance", cue: "Weight is the assistance. Lower it over time." },
+      { id: "assist", name: "Assisted pull-up", sets: 3, lo: 6, hi: 10, up: "-2.5 kg of assistance", warm: { pct: 140, r: "5", label: "About 40% more assistance than your working weight" },
+        cue: "Weight is the assistance. Lower it over time." },
       { id: "lateral", name: "Standing lateral raise", sets: 3, lo: 12, hi: 15, up: "1 to 2.5 kg" },
       { id: "cablecurl", name: "Cable curl", sets: 3, lo: 12, hi: 15, up: "2.5 kg" },
       { id: "dips", name: "Dips", sets: 2, lo: 8, hi: 12, up: "2.5 kg", cue: "Lean forward, elbows slightly out, to work the chest. Lower until upper arms are level with the floor. Weight 0 means bodyweight." },
-      { id: "ohtriB", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12, up: "2.5 kg", cue: "Take 3 seconds going down. If the cable is taken, use a dumbbell overhead extension with both hands." }
+      { id: "ohtriB", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12, up: "2.5 kg", cue: "Take 3 seconds going down. Get a full stretch at the bottom. If the cable is taken, use a dumbbell overhead extension with both hands." }
     ] },
     lowerB: { label: "Lower B", sub: "Quads, back, hamstrings, calves, core", lower: true, ex: [
       { id: "legpress", name: "Leg press", sets: 3, lo: 8, hi: 12, knee: true, unit: "lb", up: "5 lb per side", warm: { pct: 50, r: "8" },
@@ -340,7 +353,7 @@ button { cursor: pointer; }
   /* ---------- draft ---------- */
   function blankSets(ex) {
     var a = [];
-    for (var i = 0; i < ex.sets; i++) a.push({ w: "", r: "", l: "" });
+    for (var i = 0; i < ex.sets + (ex.drop ? 1 : 0); i++) a.push({ w: "", r: "", l: "" });
     return a;
   }
   function newDraft() { return { sets: {}, warm: {}, knee: "" }; }
@@ -353,6 +366,7 @@ button { cursor: pointer; }
     if (!draft.warm) draft.warm = {};
     PLAN[id].ex.forEach(function (ex) {
       if (!draft.sets[ex.id] || !draft.sets[ex.id].length) draft.sets[ex.id] = blankSets(ex);
+      else if (ex.drop && draft.sets[ex.id].length <= ex.sets) draft.sets[ex.id].push({ w: "", r: "", l: "" });
     });
   }
   var draftTimer = null;
@@ -388,10 +402,10 @@ button { cursor: pointer; }
   }
   function hintFor(dayId, ex) {
     var s = lastFor(dayId, ex);
-    if (!s) return { text: ex.warm ? "First session: use about 70% of your old weight." : "No earlier record yet.", go: false };
+    if (!s) return { text: ex.warm && ex.knee ? "First session: use about 70% of your old weight." : "No earlier record yet.", go: false };
     var arr = s.sets[ex.id];
     var text = "Last (" + new Date(s.ts).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + "): " + setsText(ex, arr);
-    var full = arr.length >= ex.sets && arr.every(function (x) {
+    var full = arr.length >= ex.sets && arr.slice(0, ex.sets).every(function (x) {
       return x.r >= ex.hi && (!ex.perLeg || x.l >= ex.hi);
     });
     var go = false;
@@ -500,9 +514,10 @@ button { cursor: pointer; }
       sets.forEach(function (s, i) {
         var base = "in-" + dayId + "-" + ex.id + "-" + i;
         var repPh = ex.lo + "-" + ex.hi;
-        var nm = ex.name + ", set " + (i + 1) + ", ";
+        var isDrop = ex.drop && i >= ex.sets;
+        var nm = ex.name + (isDrop ? ", drop set, " : ", set " + (i + 1) + ", ");
         var row = [
-          h("span", { "class": "setn", text: String(i + 1) }),
+          h("span", { "class": isDrop ? "setn w" : "setn", text: isDrop ? "D" : String(i + 1) }),
           field(s, "w", unit, "decimal", base + "-kg", nm + unit),
           field(s, "r", repPh, "numeric", base + "-reps", nm + repWord)
         ];
@@ -513,13 +528,15 @@ button { cursor: pointer; }
     build();
 
     var planRows = [];
-    if (ex.warm) planRows.push(h("dt", { text: "Warm-up" }), h("dd", { text: (ex.warm.bw ? "Bodyweight" : ex.warm.pct + "% of your working weight") + ", " + ex.warm.r + " reps" + (ex.perLeg ? " per leg" : "") }));
+    if (ex.warm) planRows.push(h("dt", { text: "Warm-up" }), h("dd", { text: (ex.warm.bw ? "Bodyweight" : (ex.warm.label || ex.warm.pct + "% of your working weight")) + ", " + ex.warm.r + " reps" + (ex.perLeg ? " per leg" : "") }));
+    if (ex.drop) planRows.push(h("dt", { text: "Drop set" }), h("dd", { text: "Right after set 3, cut the weight by about 20-25% and go to failure with no rest. Log it in row D. It does not count toward adding weight." }));
+    if (ex.partial) planRows.push(h("dt", { text: "Range" }), h("dd", { text: "Bottom half only. If it ever feels too easy, add weight by the same rule." }));
     planRows.push(h("dt", { text: "Add" }), h("dd", { text: ex.up + " when you hit " + ex.hi + (ex.timed ? " s" : " reps") + " on all " + ex.sets + " sets" }));
 
     return h("article", { "class": "ex" },
       h("div", { "class": "exhead" },
         h("h3", { text: ex.name }),
-        h("span", { "class": "target", text: ex.sets + " × " + ex.lo + "-" + ex.hi + (ex.timed ? " s" : "") + (ex.perLeg ? " /leg" : "") })
+        h("span", { "class": "target", text: ex.sets + (ex.drop ? " + drop" : "") + " × " + ex.lo + "-" + ex.hi + (ex.timed ? " s" : "") + (ex.perLeg ? " /leg" : "") })
       ),
       ex.cue ? h("p", { "class": "cue", text: ex.cue }) : null,
       planRows.length ? h("dl", { "class": "plan" }, planRows) : null,
@@ -559,6 +576,11 @@ button { cursor: pointer; }
       ));
     } else if (day.note) {
       body.append(h("div", { "class": "note" }, h("strong", { text: "Today. " }), day.note));
+    } else {
+      body.append(h("div", { "class": "note" },
+        h("strong", { text: "Warm-up. " }),
+        "Lifts with a W row: 1 warm-up set, then 3 working sets at the same weight. Isolation lifts after them are already warm, so go straight to set 1."
+      ));
     }
     var list = h("div", { "class": "stack" });
     day.ex.forEach(function (ex) { list.append(exCard(w.id, ex)); });
@@ -803,3 +825,5 @@ button { cursor: pointer; }
 
 </body>
 </html>
+
+</body></html>
