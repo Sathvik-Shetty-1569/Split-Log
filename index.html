@@ -222,8 +222,8 @@ button { cursor: pointer; }
     { id: "kneeraise", name: "Leg raise (vertical leg raise station)", sets: 3, lo: 10, hi: 15, up: "a light ankle weight, or a dumbbell between your feet",
       cue: "Knees bent. Curl your pelvis up at the top so your abs do the work, not your hip flexors. 2 seconds down." }
   ];
-  var WED_EX = RUN_EX.concat([ABS_EX[0]]);
-  var SAT_EX = RUN_EX.concat([ABS_EX[1]]);
+  var WED_EX = RUN_EX.concat(ABS_EX);
+  var SAT_EX = RUN_EX.concat(ABS_EX);
   var PLAN = {
     upperA: { label: "Upper A", sub: "Chest, back, arms", ex: [
       { id: "bench", name: "Flat chest press (convergent machine)", sets: 3, lo: 8, hi: 12, up: "2.5 kg", warm: { pct: 50, r: "8" } },
@@ -231,7 +231,7 @@ button { cursor: pointer; }
       { id: "pulldown", name: "Lat pulldown", sets: 3, lo: 8, hi: 12, up: "2.5 kg", warm: { pct: 50, r: "8" } },
       { id: "row", name: "Seated row machine (neutral grip)", sets: 3, lo: 8, hi: 12, up: "2.5 kg",
         cue: "Palms face each other, chest against the pad, elbows close to your body. Pull your elbows back, squeeze your shoulder blades for 1 second, 2 seconds back out." },
-      { id: "lateral", name: "Standing lateral raise", sets: 4, lo: 12, hi: 15, up: "1 to 2.5 kg", cue: "Raise to shoulder height, 2-3 seconds down." },
+      { id: "lateral", name: "Standing lateral raise", sets: 5, lo: 12, hi: 15, up: "1 to 2.5 kg", cue: "Raise to shoulder height, 2-3 seconds down." },
       { id: "preacher", name: "Incline dumbbell curl", sets: 3, lo: 10, hi: 12, up: "1 to 2 kg per dumbbell",
         cue: "Bench at about 45-60 degrees, arms hanging straight down. Log the weight of one dumbbell. Take 3 seconds going down and get a full stretch at the bottom." },
       { id: "ohtri", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12, up: "2.5 kg",
@@ -245,7 +245,7 @@ button { cursor: pointer; }
       { id: "legext", name: "Leg extension", sets: 3, lo: 10, hi: 15, knee: true, up: "2.5 kg", partial: true,
         cue: "Bottom-to-mid reps: start with knees bent about 90 degrees (stretched position), lift only to about halfway, 3 seconds down. Do not lock out. Stop if knee pain goes above 3 out of 10." },
       { id: "hamcurl", name: "Hamstring curl", sets: 4, lo: 10, hi: 12, up: "2.5 kg" },
-      { id: "calf", name: "Calf raise (leg press or Smith)", sets: 5, lo: 10, hi: 15, up: "5 kg", cue: "Pause 1 second at the bottom." }
+      { id: "calf", name: "Calf raise (leg press or Smith)", sets: 6, lo: 10, hi: 15, up: "5 kg", cue: "Pause 1 second at the bottom." }
     ] },
     calves: { label: "Run + Mini Session", sub: "Easy run, wall sit, rear shoulders, forearms, biceps, dead hang, abs",
       note: "Easy run first, 25-35 minutes at a talking pace. Skip the run if your knee is above 3 out of 10. Then the wall sit, then the light sets, then abs last.",
@@ -256,11 +256,13 @@ button { cursor: pointer; }
     upperB: { label: "Upper B", sub: "Shoulders, back, arms, extra chest", ex: [
       { id: "shpress", name: "Shoulder press", sets: 3, lo: 8, hi: 10, up: "2.5 kg", warm: { pct: 50, r: "8" } },
       { id: "pecdeck", name: "Pec deck fly", sets: 3, lo: 12, hi: 15, up: "2.5 kg", cue: "Squeeze for 1 second in the middle, 3 seconds back out. If it is taken, use an incline dumbbell fly." },
+      { id: "mffly", name: "Chest fly (Multi Flight machine)", sets: 3, lo: 12, hi: 15, up: "2.5 kg",
+        cue: "Stand centered, arms at chest height, elbows slightly bent and fixed. Bring the handles together in front of your chest, squeeze for 1 second, 3 seconds back out." },
       { id: "pullup", name: "Pull-up (bodyweight)", sets: 3, lo: 6, hi: 10, up: "a few kg, such as a dumbbell held between your feet", warm: { bw: true, r: "4" },
         cue: "Weight means extra weight added. Leave it blank for bodyweight. Chin over the bar, full stretch at the bottom, 2 seconds down. Stop each set 1-2 reps before you cannot do another." },
       { id: "rowB", name: "Seated row machine (overhand grip)", sets: 3, lo: 8, hi: 12, up: "2.5 kg",
         cue: "Palms face down, chest against the pad, elbows wide at about shoulder height. Pull your elbows back, squeeze your shoulder blades for 1 second, 2 seconds back out. This version works your rear shoulders and upper back more." },
-      { id: "lateral", name: "Standing lateral raise", sets: 3, lo: 12, hi: 15, up: "1 to 2.5 kg" },
+      { id: "lateral", name: "Standing lateral raise", sets: 5, lo: 12, hi: 15, up: "1 to 2.5 kg" },
       { id: "cablecurl", name: "Cable curl", sets: 2, lo: 12, hi: 15, up: "2.5 kg" },
       { id: "dips", name: "Dips", sets: 2, lo: 8, hi: 12, up: "2.5 kg", cue: "Lean forward, elbows slightly out, to work the chest. Lower until upper arms are level with the floor. Weight 0 means bodyweight." },
       { id: "ohtriB", name: "Overhead cable triceps extension", sets: 3, lo: 10, hi: 12, up: "2.5 kg", cue: "Take 3 seconds going down. Get a full stretch at the bottom. If the cable is taken, use a dumbbell overhead extension with both hands." }
@@ -271,8 +273,10 @@ button { cursor: pointer; }
       { id: "split", name: "Split squat", sets: 3, lo: 8, hi: 12, perLeg: true, knee: true, unit: "lb", shared: true, up: "2.5 lb each", warm: { bw: true, r: "6" },
         cue: "Right leg first, match the left to the right. 3 seconds down, 3 seconds up." },
       { id: "backext", name: "Back extension", sets: 3, lo: 10, hi: 12, up: "2.5 kg" },
+      { id: "rdl", name: "Romanian deadlift (light dumbbells or Smith machine)", sets: 3, lo: 8, hi: 12, up: "2.5 kg",
+        cue: "Learn the form first, keep it light. Feet hip width, knees slightly bent and fixed. Push your hips back, bar slides down your thighs, back flat, until you feel a stretch in the back of the thighs (about mid-shin). Stand up by driving hips forward. 3 seconds down. Stop if your lower back rounds." },
       { id: "hamcurl", name: "Hamstring curl", sets: 4, lo: 12, hi: 15, up: "2.5 kg" },
-      { id: "calfseat", name: "Seated calf raise (Smith, bench under the bar)", sets: 5, lo: 12, hi: 20, up: "5 kg",
+      { id: "calfseat", name: "Seated calf raise (Smith, bench under the bar)", sets: 6, lo: 12, hi: 20, up: "5 kg",
         cue: "Sit on a bench with the bar (padded with a towel) across your lower thighs, knees bent about 90 degrees. Pause 1 second at the bottom. Bent knees train the deeper calf muscle (soleus)." }
     ] }
   };
