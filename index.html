@@ -1,10 +1,6 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Split Log</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -58,9 +54,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-padding-top: env(safe-area-inset-top, 0px); }
 body {
-  margin: 0;
   background: var(--bg);
   color: var(--fg);
   font-family: var(--body);
@@ -68,11 +62,8 @@ body {
   line-height: 1.45;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-top: max(20px, env(safe-area-inset-top, 0px));
-  padding-bottom: 140px;
+  padding-block: 20px 140px;
 }
-img { max-width: 100%; }
-[hidden] { display: none !important; }
 .app { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
@@ -111,14 +102,22 @@ button { cursor: pointer; }
 .target { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
 .cue { margin: 0; font-size: 13px; color: var(--muted); }
 .hint { margin: 0; font-family: var(--mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
-.hint.go { color: var(--accent); font-weight: 500; }
+.try { margin: 0; font-family: var(--mono); font-size: 14px; overflow-wrap: anywhere; }
+.try b { font-weight: 600; }
+.try.add b { color: var(--accent); }
+.try .why { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); }
 .grid { display: grid; grid-template-columns: 2rem repeat(var(--cols), minmax(0, 1fr)); gap: 8px; align-items: center; }
 .colhead { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; text-align: center; }
 .setn { font-family: var(--mono); font-size: 13px; color: var(--muted); }
 .inp { width: 100%; min-width: 0; height: 44px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); padding: 0 8px; text-align: center; font-family: var(--mono); font-weight: 500; font-size: 17px; }
 .inp::placeholder { color: var(--muted); opacity: .55; font-weight: 400; }
+.exbar { display: flex; flex-wrap: wrap; gap: 8px; }
 .addset { align-self: flex-start; background: none; border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; font-size: 13px; color: var(--muted); }
 .addset:hover { color: var(--fg); border-color: var(--muted); }
+.addset[aria-expanded="true"] { color: var(--fg); border-color: var(--accent); }
+.swapbox { display: flex; flex-direction: column; gap: 6px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.swapbox label { font-size: 13px; color: var(--muted); }
+.swapnote { margin: 0; font-family: var(--mono); font-size: 12px; color: var(--accent); }
 .plan { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 3px 12px; margin: 0; font-size: 13px; }
 .plan dt { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding-top: 2px; }
 .plan dd { margin: 0; overflow-wrap: anywhere; }
@@ -130,6 +129,7 @@ button { cursor: pointer; }
 .knee h3 { margin: 0; font-size: 16px; font-weight: 600; }
 .knee label { font-size: 13px; color: var(--muted); }
 .sel { height: 44px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); padding: 0 10px; font-family: var(--mono); font-size: 16px; max-width: 12rem; }
+.sel.wide { max-width: none; width: 100%; }
 
 .savebar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); z-index: 5; }
 .savebar .in { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -168,8 +168,6 @@ button { cursor: pointer; }
   .btn { padding: 0 16px; }
 }
 </style>
-</head>
-<body>
 
 <div class="app">
   <header class="top">
@@ -206,7 +204,8 @@ button { cursor: pointer; }
   "use strict";
 
   /* ---------- plan ---------- */
-  /* up = what to add when every set hits the top of the range. warm = warm-up set as a share of the working weight. */
+  /* up = what to add when every set hits the top of the range. The first number in it is the step used for weight suggestions.
+     warm = warm-up set as a share of the working weight. */
   var RUN_EX = [
     { id: "wallsit", name: "Wall sit", sets: 3, lo: 30, hi: 45, timed: true, up: "a light plate on your lap",
       cue: "Knees at about 90 degrees. Enter seconds. Stop if you feel sharp knee pain." },
@@ -288,10 +287,31 @@ button { cursor: pointer; }
   ];
   var DOW_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var RESTINFO = {
-    rest: { title: "Rest day", text: "Full rest. No lifting and no running. Eat well and sleep 7-9 hours." },
-    walk: { title: "Easy walk (optional)", text: "45-60 minutes at an easy pace, no lifting. Skip it if you feel tired. This is your lightest day before the Sunday run." },
-    run: { title: "Easy run", text: "30-40 minutes at a pace where you can still talk, no lifting. Rate your knee the next morning. If it is above 3 out of 10, skip the next run." }
+    rest: { title: "Rest day", text: "Full rest. No lifting and no running. Eat well and sleep 7-9 hours." }
   };
+
+  /* Every exercise in the plan, once, for the swap dropdown. CAT maps id -> definition (first day it appears in).
+     GROUPS lists ids by day label, in week order. */
+  var CAT = {};
+  var GROUPS = [];
+  (function () {
+    var byLabel = {};
+    WEEK.forEach(function (w) {
+      if (!w.id) return;
+      var day = PLAN[w.id];
+      var g = byLabel[day.label];
+      if (!g) { g = { label: day.label, ids: [] }; byLabel[day.label] = g; GROUPS.push(g); }
+      day.ex.forEach(function (ex) {
+        if (CAT[ex.id]) return;
+        CAT[ex.id] = ex;
+        g.ids.push(ex.id);
+      });
+    });
+  })();
+
+  /* How many sessions to keep for suggestions. History shows the latest 7. */
+  var KEEP = 60;
+  var SHOW = 7;
 
   /* ---------- helpers ---------- */
   function $(s) { return document.querySelector(s); }
@@ -317,7 +337,7 @@ button { cursor: pointer; }
   }
   function num(v) { var n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : 0; }
   function int(v) { var n = parseInt(String(v), 10); return isFinite(n) ? n : 0; }
-  function wl(w) { return w ? String(w) : "BW"; }
+  function fmtW(x) { return String(Math.round(x * 100) / 100); }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
@@ -331,10 +351,11 @@ button { cursor: pointer; }
   var now = new Date();
   var selected = pickDefaultDay();   // a key of WEEK
   var tab = "log";
-  var sessions = [];
+  var sessions = [];                 // newest first, up to KEEP
   var store = null;
-  var draft = { sets: {}, knee: "" };
+  var draft = { sets: {}, warm: {}, swap: {}, knee: "" };
   var open = {};
+  var swapOpen = {};
   var sureDel = null;
   var saving = false;
   var toastTimer = null;
@@ -349,8 +370,32 @@ button { cursor: pointer; }
     }
     return 0;
   }
-  function curDay() { var w = WEEK[selected]; return w.id ? PLAN[w.id] : null; }
   function curId() { return WEEK[selected].id || null; }
+
+  /* ---------- swaps (this session only) ---------- */
+  /* draft.swap maps a planned exercise id (the slot) to the id of the exercise used in its place today.
+     It lives in the draft, so it survives a reload, and it is dropped when the session is saved. */
+  function activeEx(slot) {
+    var t = draft.swap && draft.swap[slot.id];
+    return t && CAT[t] ? CAT[t] : slot;
+  }
+  function activeList(dayId) { return PLAN[dayId].ex.map(activeEx); }
+  function cleanSwaps(dayId, sw) {
+    var slots = PLAN[dayId].ex, out = {}, seen = {}, ok = true;
+    slots.forEach(function (slot) {
+      var t = sw && sw[slot.id];
+      if (typeof t === "string" && t !== slot.id && CAT[t]) out[slot.id] = t;
+    });
+    slots.forEach(function (slot) {
+      var a = out[slot.id] || slot.id;
+      if (seen[a]) ok = false;
+      seen[a] = true;
+    });
+    return ok ? out : {};
+  }
+  function hasData(ex) {
+    return (draft.sets[ex.id] || []).some(function (s) { return int(s.r) > 0 || int(s.l) > 0; });
+  }
 
   /* ---------- draft ---------- */
   function blankSets(ex) {
@@ -358,7 +403,13 @@ button { cursor: pointer; }
     for (var i = 0; i < ex.sets + (ex.drop ? 1 : 0); i++) a.push({ w: "", r: "", l: "" });
     return a;
   }
-  function newDraft() { return { sets: {}, warm: {}, knee: "" }; }
+  function newDraft() { return { sets: {}, warm: {}, swap: {}, knee: "" }; }
+  function ensureEx(ex) {
+    var want = ex.sets + (ex.drop ? 1 : 0);
+    if (!draft.sets[ex.id] || !draft.sets[ex.id].length) draft.sets[ex.id] = blankSets(ex);
+    else while (draft.sets[ex.id].length < want) draft.sets[ex.id].push({ w: "", r: "", l: "" });
+    if (ex.warm && !draft.warm[ex.id]) draft.warm[ex.id] = { w: "", r: "", l: "" };
+  }
   function loadDraft() {
     var id = curId();
     draft = newDraft();
@@ -366,38 +417,92 @@ button { cursor: pointer; }
     var raw = lsGet("splitlog.draft." + id);
     if (raw) { try { var p = JSON.parse(raw); if (p && p.sets) draft = p; } catch (e) {} }
     if (!draft.warm) draft.warm = {};
-    PLAN[id].ex.forEach(function (ex) {
-      if (!draft.sets[ex.id] || !draft.sets[ex.id].length) draft.sets[ex.id] = blankSets(ex);
-      else {
-        /* pad older drafts so they match the current set count */
-        var want = ex.sets + (ex.drop ? 1 : 0);
-        while (draft.sets[ex.id].length < want) draft.sets[ex.id].push({ w: "", r: "", l: "" });
-      }
-    });
+    draft.swap = cleanSwaps(id, draft.swap);
+    activeList(id).forEach(ensureEx);
   }
   var draftTimer = null;
+  function flushDraft() {
+    clearTimeout(draftTimer);
+    var id = curId();
+    if (id) lsSet("splitlog.draft." + id, JSON.stringify(draft));
+  }
   function persistDraft() {
     clearTimeout(draftTimer);
-    draftTimer = setTimeout(function () {
-      var id = curId();
-      if (id) lsSet("splitlog.draft." + id, JSON.stringify(draft));
-    }, 300);
+    draftTimer = setTimeout(flushDraft, 300);
   }
 
-  /* ---------- derived ---------- */
+  /* ---------- history and suggestions ---------- */
   var LB = 0.4536;
+  /* Most recent session that logged this exercise. Same day first (or any day for shared exercises),
+     otherwise the most recent session on any day, flagged cross. */
   function lastFor(dayId, ex) {
+    var any = null;
     for (var i = 0; i < sessions.length; i++) {
       var s = sessions[i];
-      if ((s.dayId === dayId || ex.shared) && s.sets && s.sets[ex.id] && s.sets[ex.id].length) return s;
+      if (!(s.sets && s.sets[ex.id] && s.sets[ex.id].length)) continue;
+      if (s.dayId === dayId || ex.shared) return { s: s, cross: false };
+      if (!any) any = s;
     }
-    return null;
+    return any ? { s: any, cross: true } : null;
+  }
+  /* First number in the "up" text, e.g. "2.5 kg" -> 2.5, "1 to 2.5 kg" -> 1. Null when the text has no number. */
+  function stepOf(ex) {
+    if (ex.timed) return null;
+    var m = /^\s*(\d+(?:\.\d+)?)/.exec(ex.up || "");
+    return m ? parseFloat(m[1]) : null;
+  }
+  /* What to try today, from the last logged session of this exercise. Null when there is no history. */
+  function suggest(dayId, ex) {
+    var f = lastFor(dayId, ex);
+    if (!f) return null;
+    var s = f.s, arr = s.sets[ex.id], unit = ex.unit || "kg";
+    var W = 0;
+    arr.forEach(function (x) { if ((x.w || 0) > W) W = x.w; });
+    var top = arr.filter(function (x) { return (x.w || 0) === W; }).slice(0, ex.sets);
+    var minR = Infinity;
+    top.forEach(function (x) {
+      minR = Math.min(minR, x.r || 0);
+      if (ex.perLeg) minR = Math.min(minR, x.l || 0);
+    });
+    if (!top.length || !isFinite(minR)) return null;
+    var step = stepOf(ex);
+    var rep = ex.timed ? " s" : " reps";
+    var per = ex.perLeg ? " per leg" : "";
+    var full = top.length >= ex.sets && minR >= ex.hi;
+    var aim = Math.min(ex.hi, minR + (ex.timed ? 5 : 1));
+    var sg = {
+      kind: "hold", work: W, pw: W ? fmtW(W) : "", pr: String(aim),
+      text: "Try " + (W ? fmtW(W) + " " + unit : "bodyweight") + " × " + aim + rep + per,
+      note: minR < ex.lo
+        ? "Under the " + ex.lo + rep + " floor last time. Repeat this weight. If you miss again, drop one step."
+        : "Same weight until every set reaches " + ex.hi + rep + "."
+    };
+    if (!full) return sg;
+    if (ex.knee && s.knee != null && s.knee > 3) {
+      sg.note = "Top of range hit, but your knee reached " + s.knee + "/10. Hold this weight.";
+    } else if (ex.knee && s.kneeNext != null && s.kneeNext > 0) {
+      sg.note = "Top of range hit, but your knee was " + s.kneeNext + "/10 the next morning. Hold this weight.";
+    } else if (ex.knee && s.kneeNext == null) {
+      sg.kind = "cond";
+      sg.note = "Top of range hit. " + (step != null ? "Go to " + fmtW(W + step) + " " + unit : "Add " + ex.up) +
+        " only if your knee stayed at 3/10 or less and was pain-free next morning.";
+    } else if (step != null) {
+      var nw = W + step;
+      sg.kind = "add"; sg.work = nw; sg.pw = fmtW(nw); sg.pr = ex.lo + "-" + ex.hi;
+      sg.text = "Try " + fmtW(nw) + " " + unit + " × " + ex.lo + "-" + ex.hi + rep + per + "  (+" + fmtW(step) + ")";
+      sg.note = "Top of range hit on every set last time.";
+    } else {
+      sg.kind = "add"; sg.pr = ex.lo + "-" + ex.hi;
+      sg.text = "Top of range hit. Add " + ex.up + ".";
+      sg.note = "";
+    }
+    return sg;
   }
   function warmPh(dayId, ex) {
     if (ex.warm.bw) return "BW";
-    var s = lastFor(dayId, ex), mx = 0;
-    if (s) s.sets[ex.id].forEach(function (x) { if (x.w > mx) mx = x.w; });
-    return mx ? String(Math.round(mx * ex.warm.pct / 10) / 10) : (ex.unit || "kg");
+    var sg = suggest(dayId, ex);
+    var base = sg ? sg.work : 0;
+    return base ? String(Math.round(base * ex.warm.pct / 10) / 10) : (ex.unit || "kg");
   }
   function wtxt(s) { return s.w ? s.w + (s.u || "kg") : "BW"; }
   function setsText(ex, arr) {
@@ -407,37 +512,25 @@ button { cursor: pointer; }
     }).join("   ");
   }
   function hintFor(dayId, ex) {
-    var s = lastFor(dayId, ex);
-    if (!s) return { text: ex.warm && ex.knee ? "First session: use about 70% of your old weight." : "No earlier record yet.", go: false };
-    var arr = s.sets[ex.id];
-    var text = "Last (" + new Date(s.ts).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + "): " + setsText(ex, arr);
-    var full = arr.length >= ex.sets && arr.slice(0, ex.sets).every(function (x) {
-      return x.r >= ex.hi && (!ex.perLeg || x.l >= ex.hi);
-    });
-    var go = false;
-    if (full) {
-      var add = "Add " + ex.up + ".";
-      if (ex.knee && s.knee != null && s.knee > 3) {
-        text += "  Top of range hit, but your knee reached " + s.knee + "/10. Hold this weight.";
-      } else if (ex.knee && s.kneeNext != null && s.kneeNext > 0) {
-        text += "  Top of range hit, but your knee was " + s.kneeNext + "/10 the next morning. Hold this weight.";
-      } else if (ex.knee && s.kneeNext == null) {
-        text += "  Top of range hit. " + add + " Only if your knee stayed at 3/10 or less and was pain-free next morning.";
-      } else {
-        go = true;
-        text += "  Top of range hit. " + add;
-      }
-    }
-    return { text: text, go: go };
+    var f = lastFor(dayId, ex);
+    if (!f) return { text: ex.warm && ex.knee ? "First session: use about 70% of your old weight." : "No earlier record yet.", sg: null };
+    var s = f.s;
+    var when = new Date(s.ts).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+    if (f.cross && PLAN[s.dayId]) when += ", " + PLAN[s.dayId].label;
+    return { text: "Last (" + when + "): " + setsText(ex, s.sets[ex.id]), sg: suggest(dayId, ex) };
+  }
+  function defFor(day, id) {
+    var hit = day && day.ex.filter(function (e) { return e.id === id; })[0];
+    return hit || CAT[id] || { id: id, name: id };
   }
   function volume(setsObj, dayId) {
     var total = 0;
     var day = PLAN[dayId];
     Object.keys(setsObj || {}).forEach(function (exId) {
-      var ex = day && day.ex.filter(function (e) { return e.id === exId; })[0];
-      if (ex && ex.timed) return;
+      var ex = defFor(day, exId);
+      if (ex.timed) return;
       setsObj[exId].forEach(function (s) {
-        total += (s.w || 0) * (s.u === "lb" ? LB : 1) * ((s.r || 0) + (ex && ex.perLeg ? (s.l || 0) : 0));
+        total += (s.w || 0) * (s.u === "lb" ? LB : 1) * ((s.r || 0) + (ex.perLeg ? (s.l || 0) : 0));
       });
     });
     return total;
@@ -445,7 +538,7 @@ button { cursor: pointer; }
   function draftTally() {
     var id = curId(), n = 0, vol = 0;
     if (!id) return { n: 0, vol: 0 };
-    PLAN[id].ex.forEach(function (ex) {
+    activeList(id).forEach(function (ex) {
       (draft.sets[ex.id] || []).forEach(function (s) {
         var r = int(s.r), l = ex.perLeg ? int(s.l) : 0;
         if (r > 0 || l > 0) { n++; if (!ex.timed) vol += num(s.w) * (ex.unit === "lb" ? LB : 1) * (r + l); }
@@ -482,22 +575,75 @@ button { cursor: pointer; }
     });
   }
 
-  function exCard(dayId, ex) {
+  function doSwap(dayId, slot, t) {
+    var used = {};
+    PLAN[dayId].ex.forEach(function (s2) { if (s2 !== slot) used[activeEx(s2).id] = true; });
+    if (!CAT[t] || used[t]) {
+      toast("That exercise is already on today's list.", true);
+      renderCard(dayId, slot);
+      return;
+    }
+    var prev = activeEx(slot);
+    var had = hasData(prev);
+    if (t === slot.id) delete draft.swap[slot.id]; else draft.swap[slot.id] = t;
+    ensureEx(activeEx(slot));
+    swapOpen[dayId + ":" + slot.id] = false;
+    persistDraft();
+    renderCard(dayId, slot);
+    renderTally();
+    toast(had ? "Sets typed for " + prev.name + " are kept, but not saved while it is swapped out."
+      : (t === slot.id ? "Back to the planned exercise." : "Swapped for this session only. It resets when you save."));
+  }
+
+  function swapSelect(dayId, slot) {
+    var used = {};
+    PLAN[dayId].ex.forEach(function (s2) { if (s2 !== slot) used[activeEx(s2).id] = true; });
+    var sel = h("select", {
+      "class": "sel wide", id: "swap-" + dayId + "-" + slot.id,
+      onchange: function (e) { doSwap(dayId, slot, e.target.value); }
+    });
+    GROUPS.forEach(function (g) {
+      var og = h("optgroup", { label: g.label });
+      g.ids.forEach(function (id) {
+        var dis = !!used[id];
+        og.append(h("option", {
+          value: id, disabled: dis,
+          text: CAT[id].name + (id === slot.id ? " (planned here)" : "") + (dis ? " (already on today's list)" : "")
+        }));
+      });
+      sel.append(og);
+    });
+    sel.value = activeEx(slot).id;
+    return sel;
+  }
+
+  function exCard(dayId, slot) {
+    var ex = activeEx(slot);
+    var swapped = ex !== slot;
+    var key = dayId + ":" + slot.id;
     var cols = ex.perLeg ? 3 : 2;
     var sets = draft.sets[ex.id];
     var unit = ex.unit || "kg";
     var repWord = ex.timed ? "sec" : "reps";
-    var wu = null;
-    if (ex.warm) { if (!draft.warm[ex.id]) draft.warm[ex.id] = { w: "", r: "", l: "" }; wu = draft.warm[ex.id]; }
-    var hint = hintFor(dayId, ex);
+    var wu = ex.warm ? draft.warm[ex.id] : null;
+    var cur = hintFor(dayId, ex);
     var grid = h("div", { "class": "grid", style: "--cols:" + cols });
 
-    function field(obj, key, ph, mode, id, label, cls) {
-      return h("input", {
+    function phFor(kind) {
+      var sg = cur.sg;
+      if (kind === "w") return sg && sg.pw ? sg.pw : unit;
+      if (kind === "r") return sg ? sg.pr : ex.lo + "-" + ex.hi;
+      if (kind === "warm") return warmPh(dayId, ex);
+      return "";
+    }
+    function field(obj, key, ph, kind, mode, id, label, cls) {
+      var el = h("input", {
         "class": "inp" + (cls ? " " + cls : ""), id: id, type: "text", inputmode: mode, autocomplete: "off",
         placeholder: ph, value: obj[key], "aria-label": label,
         oninput: function (e) { obj[key] = e.target.value; persistDraft(); renderTally(); }
       });
+      if (kind) el.setAttribute("data-ph", kind);
+      return el;
     }
     function build() {
       grid.replaceChildren();
@@ -507,31 +653,44 @@ button { cursor: pointer; }
       head.forEach(function (c) { grid.append(c); });
       if (wu) {
         var wb = "in-" + dayId + "-" + ex.id + "-warm";
-        var wField = field(wu, "w", warmPh(dayId, ex), "decimal", wb + "-w", ex.name + ", warm-up, " + unit, "warm");
-        wField.setAttribute("data-wex", ex.id);
         var wrow = [
           h("span", { "class": "setn w", title: "Warm-up set", text: "W" }),
-          wField,
-          field(wu, "r", ex.warm.r, "numeric", wb + "-r", ex.name + ", warm-up, " + repWord, "warm")
+          field(wu, "w", phFor("warm"), "warm", "decimal", wb + "-w", ex.name + ", warm-up, " + unit, "warm"),
+          field(wu, "r", ex.warm.r, null, "numeric", wb + "-r", ex.name + ", warm-up, " + repWord, "warm")
         ];
-        if (ex.perLeg) wrow.push(field(wu, "l", ex.warm.r, "numeric", wb + "-l", ex.name + ", warm-up, " + repWord + " left", "warm"));
+        if (ex.perLeg) wrow.push(field(wu, "l", ex.warm.r, null, "numeric", wb + "-l", ex.name + ", warm-up, " + repWord + " left", "warm"));
         wrow.forEach(function (c) { grid.append(c); });
       }
       sets.forEach(function (s, i) {
         var base = "in-" + dayId + "-" + ex.id + "-" + i;
-        var repPh = ex.lo + "-" + ex.hi;
         var isDrop = ex.drop && i >= ex.sets;
         var nm = ex.name + (isDrop ? ", drop set, " : ", set " + (i + 1) + ", ");
         var row = [
           h("span", { "class": isDrop ? "setn w" : "setn", text: isDrop ? "D" : String(i + 1) }),
-          field(s, "w", unit, "decimal", base + "-kg", nm + unit),
-          field(s, "r", repPh, "numeric", base + "-reps", nm + repWord)
+          field(s, "w", phFor("w"), "w", "decimal", base + "-kg", nm + unit),
+          field(s, "r", phFor("r"), "r", "numeric", base + "-reps", nm + repWord)
         ];
-        if (ex.perLeg) row.push(field(s, "l", repPh, "numeric", base + "-repsL", nm + repWord + " left"));
+        if (ex.perLeg) row.push(field(s, "l", phFor("r"), "r", "numeric", base + "-repsL", nm + repWord + " left"));
         row.forEach(function (c) { grid.append(c); });
       });
     }
     build();
+
+    var hintEl = h("p", { "class": "hint" });
+    var tryEl = h("p", { "class": "try" });
+    function refresh() {
+      cur = hintFor(dayId, ex);
+      hintEl.textContent = cur.text;
+      tryEl.replaceChildren();
+      var sg = cur.sg;
+      tryEl.hidden = !sg;
+      if (sg) {
+        tryEl.className = "try" + (sg.kind === "add" ? " add" : "");
+        tryEl.append(h("b", { text: sg.text }));
+        if (sg.note) tryEl.append(h("span", { "class": "why", text: sg.note }));
+      }
+      grid.querySelectorAll("input[data-ph]").forEach(function (i) { i.placeholder = phFor(i.getAttribute("data-ph")); });
+    }
 
     var planRows = [];
     if (ex.warm) planRows.push(h("dt", { text: "Warm-up" }), h("dd", { text: (ex.warm.bw ? "Bodyweight" : (ex.warm.label || ex.warm.pct + "% of your working weight")) + ", " + ex.warm.r + " reps" + (ex.perLeg ? " per leg" : "") }));
@@ -539,19 +698,48 @@ button { cursor: pointer; }
     if (ex.partial) planRows.push(h("dt", { text: "Range" }), h("dd", { text: "Bottom half only. If it ever feels too easy, add weight by the same rule." }));
     planRows.push(h("dt", { text: "Add" }), h("dd", { text: ex.up + " when you hit " + ex.hi + (ex.timed ? " s" : " reps") + " on all " + ex.sets + " sets" }));
 
-    return h("article", { "class": "ex" },
+    var isOpen = !!swapOpen[key];
+    var bar = h("div", { "class": "exbar" },
+      h("button", { "class": "addset", type: "button", onclick: function () {
+        sets.push({ w: "", r: "", l: "" }); persistDraft(); build();
+      } }, "+ Add set"),
+      h("button", { "class": "addset", type: "button", "aria-expanded": isOpen ? "true" : "false", onclick: function () {
+        swapOpen[key] = !swapOpen[key]; renderCard(dayId, slot);
+      } }, "Swap exercise"),
+      swapped ? h("button", { "class": "addset", type: "button", onclick: function () { doSwap(dayId, slot, slot.id); } }, "Undo swap") : null
+    );
+    var box = null;
+    if (isOpen) {
+      var sid = "swap-" + dayId + "-" + slot.id;
+      box = h("div", { "class": "swapbox" },
+        h("label", { "for": sid, text: "Swap this exercise for this session only. It goes back to the planned exercise when you save." }),
+        swapSelect(dayId, slot)
+      );
+    }
+
+    var article = h("article", { "class": "ex", "data-slot": slot.id },
       h("div", { "class": "exhead" },
         h("h3", { text: ex.name }),
         h("span", { "class": "target", text: ex.sets + (ex.drop ? " + drop" : "") + " × " + ex.lo + "-" + ex.hi + (ex.timed ? " s" : "") + (ex.perLeg ? " /leg" : "") })
       ),
+      swapped ? h("p", { "class": "swapnote", text: "Swapped in for " + slot.name + ". Resets when you save." }) : null,
       ex.cue ? h("p", { "class": "cue", text: ex.cue }) : null,
       planRows.length ? h("dl", { "class": "plan" }, planRows) : null,
-      h("p", { "class": "hint" + (hint.go ? " go" : ""), "data-ex": ex.id, text: hint.text }),
+      hintEl,
+      tryEl,
       grid,
-      h("button", { "class": "addset", type: "button", onclick: function () {
-        sets.push({ w: "", r: "", l: "" }); persistDraft(); build();
-      } }, "+ Add set")
+      bar,
+      box
     );
+    article._refresh = refresh;
+    refresh();
+    return article;
+  }
+
+  function renderCard(dayId, slot) {
+    var old = document.querySelector('.ex[data-slot="' + slot.id + '"]');
+    var fresh = exCard(dayId, slot);
+    if (old) old.replaceWith(fresh);
   }
 
   function renderDay() {
@@ -589,7 +777,7 @@ button { cursor: pointer; }
       ));
     }
     var list = h("div", { "class": "stack" });
-    day.ex.forEach(function (ex) { list.append(exCard(w.id, ex)); });
+    day.ex.forEach(function (slot) { list.append(exCard(w.id, slot)); });
     body.append(list);
     if (day.lower) {
       var sel = h("select", { "class": "sel", id: "knee-during", onchange: function (e) { draft.knee = e.target.value; persistDraft(); } });
@@ -613,18 +801,9 @@ button { cursor: pointer; }
     $("#savebtn").disabled = saving || t.n === 0;
   }
 
+  /* Called when saved sessions change: refresh the last-session line, the suggestion and the placeholders in place. */
   function updateHints() {
-    var id = curId();
-    if (!id) return;
-    PLAN[id].ex.forEach(function (ex) {
-      var el = document.querySelector('.hint[data-ex="' + ex.id + '"]');
-      if (!el) return;
-      var hint = hintFor(id, ex);
-      var wi = ex.warm ? document.querySelector('.inp.warm[data-wex="' + ex.id + '"]') : null;
-      if (wi) wi.placeholder = warmPh(id, ex);
-      el.textContent = hint.text;
-      el.className = "hint" + (hint.go ? " go" : "");
-    });
+    document.querySelectorAll(".ex").forEach(function (el) { if (el._refresh) el._refresh(); });
   }
 
   /* ---------- render: history ---------- */
@@ -632,7 +811,7 @@ button { cursor: pointer; }
     var root = $("#history");
     root.replaceChildren();
     var cnt = $("#histcount");
-    cnt.textContent = sessions.length ? String(sessions.length) : "";
+    cnt.textContent = sessions.length ? String(Math.min(sessions.length, SHOW)) : "";
     $("#histnote").textContent = !store ? "Loading your sessions..." :
       (store.mode === "db" ? "Last 7 sessions, saved to your account." : "Last 7 sessions, saved on this device only.");
     if (!sessions.length) {
@@ -642,7 +821,7 @@ button { cursor: pointer; }
       ));
       return;
     }
-    sessions.slice(0, 7).forEach(function (s) {
+    sessions.slice(0, SHOW).forEach(function (s) {
       var day = PLAN[s.dayId];
       var isOpen = !!open[s.id];
       var nSets = 0;
@@ -657,15 +836,18 @@ button { cursor: pointer; }
       );
       if (isOpen) {
         var bodyEl = h("div", { "class": "sessbody" });
-        if (day) {
-          day.ex.forEach(function (ex) {
-            var arr = s.sets && s.sets[ex.id];
-            if (!arr || !arr.length) return;
-            var wm = s.warm && s.warm[ex.id];
-            bodyEl.append(h("div", { "class": "hx" }, h("span", { "class": "n", text: ex.name }),
-              h("span", { "class": "s", text: (wm ? "W " + setsText(ex, [wm]) + "   |   " : "") + setsText(ex, arr) })));
-          });
-        }
+        /* Planned exercises first, then anything swapped in that day. */
+        var keys = Object.keys(s.sets || {}), order = [];
+        if (day) day.ex.forEach(function (e) { if (keys.indexOf(e.id) >= 0) order.push(e.id); });
+        keys.forEach(function (k) { if (order.indexOf(k) < 0) order.push(k); });
+        order.forEach(function (k) {
+          var arr = s.sets[k];
+          if (!arr || !arr.length) return;
+          var ex = defFor(day, k);
+          var wm = s.warm && s.warm[k];
+          bodyEl.append(h("div", { "class": "hx" }, h("span", { "class": "n", text: ex.name }),
+            h("span", { "class": "s", text: (wm ? "W " + setsText(ex, [wm]) + "   |   " : "") + setsText(ex, arr) })));
+        });
         if (day && day.lower) {
           var ks = h("select", { "class": "sel", id: "kn-" + s.id, onchange: function (e) {
             var v = e.target.value === "" ? null : Number(e.target.value);
@@ -692,6 +874,7 @@ button { cursor: pointer; }
 
   /* ---------- navigation ---------- */
   function selectDay(i) {
+    flushDraft();
     selected = i;
     loadDraft();
     renderWeek();
@@ -714,7 +897,7 @@ button { cursor: pointer; }
     if (!id || saving) return;
     var day = PLAN[id];
     var out = {}, warmOut = {}, n = 0;
-    day.ex.forEach(function (ex) {
+    activeList(id).forEach(function (ex) {
       var arr = [];
       function mk(s) {
         var r = int(s.r), l = ex.perLeg ? int(s.l) : 0;
@@ -739,8 +922,10 @@ button { cursor: pointer; }
     $("#savebtn").disabled = true;
     store.save(doc).then(function () {
       saving = false;
+      clearTimeout(draftTimer);
       lsDel("splitlog.draft." + id);
-      draft = newDraft();
+      draft = newDraft();      /* drops the swaps: the planned exercises come back */
+      swapOpen = {};
       loadDraft();
       renderDay();
       renderTally();
@@ -759,9 +944,9 @@ button { cursor: pointer; }
   function localStore() {
     var KEY = "splitlog.sessions";
     function read() { try { return JSON.parse(lsGet(KEY) || "[]"); } catch (e) { return []; } }
-    function write(a) { lsSet(KEY, JSON.stringify(a.slice(0, 50))); }
+    function write(a) { lsSet(KEY, JSON.stringify(a.slice(0, KEEP))); }
     function publish() {
-      sessions = read().sort(function (a, b) { return b.ts - a.ts; }).slice(0, 7);
+      sessions = read().sort(function (a, b) { return b.ts - a.ts; }).slice(0, KEEP);
       onSessions();
     }
     return {
@@ -781,7 +966,7 @@ button { cursor: pointer; }
         loadTimer = setTimeout(function () {
           $("#histnote").textContent = "Cannot reach your saved sessions yet. What shows may be out of date.";
         }, 10000);
-        col.orderBy("ts", "desc").limit(7).onSnapshot(function (snap) {
+        col.orderBy("ts", "desc").limit(KEEP).onSnapshot(function (snap) {
           if (!snap.metadata.fromCache) clearTimeout(loadTimer);
           sessions = snap.docs.map(function (d) { var x = d.data(); x.id = d.id; return x; });
           onSessions();
@@ -796,7 +981,7 @@ button { cursor: pointer; }
     };
   }
   function onSessions() {
-    $("#histcount").textContent = sessions.length ? String(sessions.length) : "";
+    $("#histcount").textContent = sessions.length ? String(Math.min(sessions.length, SHOW)) : "";
     updateHints();
     if (tab === "hist") renderHistory();
   }
@@ -829,5 +1014,4 @@ button { cursor: pointer; }
 })();
 </script>
 
-</body>
-</html>
+</body></html>
